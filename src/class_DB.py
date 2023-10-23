@@ -31,7 +31,7 @@ class DBManager():
                 """)
             conn.commit()
 
-    def insert_table(self, json_info: dict):
+    def insert_table(self, json_info: dict) -> None:
         """
         Функция для заполнения таблицы в базе данных
         :param json_info: информация по компаниям и вакансиям в формате json
@@ -48,7 +48,7 @@ class DBManager():
                 )
             conn.commit()
 
-    def get_companies_and_vacancies_count(self):
+    def get_companies_and_vacancies_count(self) -> None:
         """
         Функция для получения списка всех компаний и количества вакансий у каждой компании.
         :return:
@@ -56,36 +56,64 @@ class DBManager():
         with psycopg2.connect(**self.db_config) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    SELECT count(*) FROM employers
+                    SELECT employer_title, COUNT(*) AS vacancies_count FROM employers
                     GROUP BY employer_title
                 """)
-                return cur.fetchall()
+                print(cur.fetchall())
 
-    def get_all_vacancies(self):
+    def get_all_vacancies(self) -> None:
         """
         Функция для получения списка всех вакансий с указанием названия компании,
         названия вакансии и зарплаты и ссылки на вакансию
         :return:
         """
-        pass
+        with psycopg2.connect(**self.db_config) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT employer_title, vacancy_name, vacancy_salary_from, vacancy_url
+                    FROM employers
+                """)
+                print(cur.fetchall())
 
-    def get_avg_salary(self):
+    def get_avg_salary(self) -> None:
         """
         Функция для получения средней зарплаты по вакансиям.
         :return:
         """
-        pass
+        with psycopg2.connect(**self.db_config) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT employer_title, AVG(vacancy_salary_from) AS avg_salary
+                    FROM employers
+                    GROUP BY employer_title
+                """)
+                print(cur.fetchall())
 
-    def get_vacancies_with_higher_salary(self):
+    def get_vacancies_with_higher_salary(self) -> None:
         """
         Функция для получения списка всех вакансий, у которых зарплата выше средней по всем вакансиям.
         :return:
         """
-        pass
+        with psycopg2.connect(**self.db_config) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT employer_title, vacancy_name, vacancy_url, vacancy_salary_from
+                    FROM employers
+                    WHERE vacancy_salary_from > (SELECT AVG(vacancy_salary_from) FROM employers)
+                """)
+                print(cur.fetchall())
 
-    def get_vacancies_with_keyword(self, sort_word):
+    def get_vacancies_with_keyword(self, sort_word: str) -> None:
         """
         Функция для получения списка всех вакансий с сортировкой по указанному значению (слову)
+        :param sort_word: слово-фильтр
         :return:
         """
-        pass
+        with psycopg2.connect(**self.db_config) as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"""
+                    SELECT *
+                    FROM employers
+                    WHERE vacancy_name LIKE '%{sort_word[1:-1]}%'
+                """)
+                print(cur.fetchall())
