@@ -1,7 +1,9 @@
 from configparser import ConfigParser
 
+import json
 
-def config(filename="../database.ini", section="postgresql"):
+
+def config(filename="database.ini", section="postgresql"):
     parser = ConfigParser()
     parser.read(filename)
     db = {}
@@ -13,3 +15,8 @@ def config(filename="../database.ini", section="postgresql"):
         raise Exception(
             'Section {0} is not found in the {1} file.'.format(section, filename))
     return db
+
+
+def load_employers(json_file):
+    with open(json_file, 'r', encoding='utf-8') as file:
+        return json.load(file)

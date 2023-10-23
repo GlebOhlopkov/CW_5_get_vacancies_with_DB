@@ -1,4 +1,4 @@
-from utils import config
+from src.utils import config
 import psycopg2
 
 
@@ -26,7 +26,6 @@ class DBManager():
                         vacancy_id INTEGER,
                         vacancy_name VARCHAR,
                         vacancy_url VARCHAR,
-                        vacancy_published DATE,
                         vacancy_salary_from INTEGER
                     )
                 """)
@@ -42,10 +41,10 @@ class DBManager():
             with conn.cursor() as cur:
                 cur.execute("""
                     INSERT INTO employers
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s)
                     """,
-                    (json_info['department']['name'], json_info['id'], json_info['name'],
-                     json_info['url'], json_info['published_at'], json_info['salary']['from'])
+                    (json_info['employer']['name'], json_info['id'], json_info['name'],
+                     json_info['url'], json_info['salary']['from'])
                 )
             conn.commit()
 
