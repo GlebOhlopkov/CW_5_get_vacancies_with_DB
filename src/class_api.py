@@ -14,10 +14,11 @@ class HeadHunterAPI():
 
     def get_vacancies(self, employer_id) -> dict:
         """
-        Функция для получения данных сайта от выбранного работодателя
+        Функция для получения данных сайта от выбранной компании
 
         :return данные в формате словаря
         """
-        response = requests.get(self.url_address, params={'per_page': 100, 'employer_id': employer_id})
+        response = requests.get(self.url_address, params={'per_page': 100, 'employer_id': employer_id,
+                                'only_with_salary': True, 'period': 7})
         vacancies_dict = response.json()
         return vacancies_dict['items']
