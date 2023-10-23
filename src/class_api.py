@@ -19,6 +19,6 @@ class HeadHunterAPI():
         :return данные в формате словаря
         """
         response = requests.get(self.url_address, params={'per_page': 100, 'employer_id': employer_id,
-                                'only_with_salary': True, 'period': 7})
+                                'only_with_salary': True, 'currency': 'RUR', 'period': 7})
         vacancies_dict = response.json()
         return vacancies_dict['items']
