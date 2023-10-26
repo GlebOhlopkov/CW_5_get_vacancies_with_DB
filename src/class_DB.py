@@ -37,16 +37,12 @@ class DBManager():
             with conn.cursor() as cur:
                 cur.execute("""
                     CREATE TABLE vacancies (
-                        employer_id INTEGER,
+                        employer_id INTEGER REFERENCES employers(employer_id) NOT NULL,
                         vacancy_id INTEGER,
                         vacancy_name VARCHAR,
                         vacancy_url VARCHAR,
                         vacancy_salary_from INTEGER
-                    );
-                    ALTER TABLE vacancies
-                    ADD CONSTRAINT fk_vacancies_employers
-                    FOREIGN KEY (employer_id)
-                    REFERENCES employers (employer_id)
+                    )
                 """)
             conn.commit()
 
